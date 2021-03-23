@@ -176,7 +176,7 @@ class HTMLReport:
                     ),
                     html.tr(
                         [
-                            html.th(html.raw_table_data['Athena'],
+                            html.th(raw_table_data['Athena'],
                                     colspan="4")
                         ]
                     ),
