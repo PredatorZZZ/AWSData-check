@@ -3,6 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.idea
+
+# Ignore Athena csv results
+athena*
+
+# Ignore output files
+output.html
+
 # C extensions
 *.so
 
