@@ -55,13 +55,18 @@ class HTMLReport:
     def _generate_s3_report(s3_data: dict):
         s3_link = s3_data['S3Link']
         s3_data.pop('S3Link')
+        file_results = [
+            html.p(item) for item in s3_data['FileResults'] if
+            not item.endswith('/')
+        ]
         s3_report = html.tr(
             [
                 html.th(
-                    f'Athena results:',
+                    f'S3 results:',
                     class_='s3-results'
                 ),
-                html.th(s3_data,
+                html.th(
+                        *file_results,
                         html.p(
                             html.a(
                                 s3_link,
@@ -78,7 +83,7 @@ class HTMLReport:
         glue_report = html.tr(
             [
                 html.th(
-                    f'Athena results:',
+                    f'Glue results:',
                     class_='glue-results'
                 ),
                 html.th(glue_data),

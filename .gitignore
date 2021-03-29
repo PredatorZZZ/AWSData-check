@@ -4,15 +4,14 @@ __pycache__/
 *$py.class
 
 .idea
-
-# Ignore Athena csv results
-athena*
-
-# Ignore output files
-output.html
+venv
 
 # C extensions
 *.so
+
+# Output and Athena results
+athena_*
+output.html
 
 # Distribution / packaging
 .Python

@@ -3,11 +3,14 @@ import os
 import boto3
 import botocore.exceptions as aws_err
 
+from .LogInfo import LogInfo
+
 
 class AWSData:
-
     S3_LINK_TEMPLATE = "https://console.aws.amazon.com/s3/" \
                        "home?region={REGION}&bucket={BUCKET}&prefix={PREFIX}"
+
+    aws_logger = LogInfo()
 
     def __init__(self, aws_profile: str, aws_region: str):
         self.aws_profile = aws_profile
@@ -17,6 +20,7 @@ class AWSData:
     def _create_aws_client(self, aws_service):
         return self.session.client(aws_service)
 
+    @aws_logger.info
     def get_aws_glue_data(self, table):
         output = {
             "Database": None,
@@ -37,10 +41,11 @@ class AWSData:
         except aws_err.ClientError:
             return output
 
+    @aws_logger.info
     def get_aws_s3_data(self, table: str):
         output = {
             "S3Link": None,
-            "FileResults": None
+            "FileResults": []
         }
         _, table_name = table.split(".")
         s3_client = self._create_aws_client("s3")
@@ -63,6 +68,7 @@ class AWSData:
             return output
         return output
 
+    @aws_logger.info
     def get_aws_athena_data(self, table: str):
         output = {
             "FilePath": None
