@@ -2,12 +2,14 @@ import os
 
 import boto3
 import botocore.exceptions as aws_err
+from datacheck.LogInfo import LogInfo
 
 
 class AWSData:
-
     S3_LINK_TEMPLATE = "https://console.aws.amazon.com/s3/" \
                        "home?region={REGION}&bucket={BUCKET}&prefix={PREFIX}"
+
+    get_aws_logger = LogInfo()
 
     def __init__(self, aws_profile, aws_region):
         self.aws_profile = aws_profile
@@ -17,6 +19,7 @@ class AWSData:
     def _create_aws_client(self, aws_service):
         return self.session.client(aws_service)
 
+    @get_aws_logger.info
     def get_aws_glue_data(self, table):
         output = {
             'Database': None,
@@ -37,6 +40,7 @@ class AWSData:
         except aws_err.ClientError:
             return output
 
+    @get_aws_logger.info
     def get_aws_s3_data(self, table):
         output = {
             'S3Link': None,
@@ -51,7 +55,7 @@ class AWSData:
                 Bucket=bucket,
                 Prefix=prefix
             )
-            output['S3Link'] = self.S3_LINK_TEMPLATE\
+            output['S3Link'] = self.S3_LINK_TEMPLATE \
                 .replace('{REGION}', self.aws_region) \
                 .replace('{BUCKET}', bucket) \
                 .replace('{PREFIX}', prefix)
@@ -61,6 +65,7 @@ class AWSData:
             return output
         return output
 
+    @get_aws_logger.info
     def get_aws_athena_data(self, table):
         database_name, table_name = table.split('.')
         download_file_name = f'athena_{database_name}_{table_name}.csv'
