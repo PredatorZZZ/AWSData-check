@@ -2,16 +2,17 @@ import os
 
 import boto3
 import botocore.exceptions as aws_err
-from datacheck.LogInfo import LogInfo
+
+from .LogInfo import LogInfo
 
 
 class AWSData:
     S3_LINK_TEMPLATE = "https://console.aws.amazon.com/s3/" \
                        "home?region={REGION}&bucket={BUCKET}&prefix={PREFIX}"
 
-    get_aws_logger = LogInfo()
+    aws_logger = LogInfo()
 
-    def __init__(self, aws_profile, aws_region):
+    def __init__(self, aws_profile: str, aws_region: str):
         self.aws_profile = aws_profile
         self.aws_region = aws_region
         self.session = boto3.Session(profile_name=self.aws_profile)
@@ -19,7 +20,7 @@ class AWSData:
     def _create_aws_client(self, aws_service):
         return self.session.client(aws_service)
 
-    @get_aws_logger.info
+    @aws_logger.info
     def get_aws_glue_data(self, table):
         output = {
             "Database": None,
@@ -40,12 +41,13 @@ class AWSData:
         except aws_err.ClientError:
             return output
 
-    @get_aws_logger.info
-    def get_aws_s3_data(self, table):
+    @aws_logger.info
+    def get_aws_s3_data(self, table: str):
         output = {
             "S3Link": None,
             "FileResults": None
         }
+        _, table_name = table.split(".")
         s3_client = self._create_aws_client("s3")
         table_data = self.get_aws_glue_data(table)
         if table_data["S3Location"]:
@@ -60,13 +62,15 @@ class AWSData:
                 .replace("{BUCKET}", bucket) \
                 .replace("{PREFIX}", prefix)
             output["FileResults"] = [
-                item["Key"] for item in s3_response["Contents"]
+                item["Key"] for item in s3_response["Contents"] if
+                item['Key'].split('/')[2] == table_name
             ]
             return output
         return output
 
-    @get_aws_logger.info
-    def get_aws_athena_data(self, table):
+
+    @aws_logger.info
+    def get_aws_athena_data(self, table: str):
         output = {
             "FilePath": None
         }

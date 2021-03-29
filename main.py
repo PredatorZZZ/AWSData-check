@@ -32,6 +32,12 @@ if __name__ == '__main__':
     with open(f'{args.path}', 'r') as json_file_config:
         config_data = json.load(json_file_config)
     process_tables = config_data.get('tables')
+
+    if len(process_tables) != len(set(process_tables)):
+        logging.error('Found duplicates')
+
+    process_tables = set(process_tables)
+
     if process_tables:
         tables_data = dict()
         aws_data = AWSData(args.aws_profile, args.aws_region)
@@ -43,9 +49,6 @@ if __name__ == '__main__':
                 'Athena': aws_data.get_aws_athena_data(process_table)
             }
         html_report.insert_data(tables_data)
-        logging.info('Saving HTML report')
         html_report.save_report()
-        logging.info('')
     else:
-        logging.error('JSON config file is incorrect')
         sys.exit(0)
