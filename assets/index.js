@@ -1,8 +1,9 @@
-async function getAndParseFile(fileName, container) {
-    var csvData = await fetch(fileName).then((data) => {
-        return data.text();
-    })
-    processData(csvData, container);
+function getAndParseFile(tableName, container){
+    var div = document.querySelector("[table_name="+tableName+"]");
+    var text = div.innerHTML;
+    div.innerHTML = "";
+
+    processData(text, container);
 }
 
 
@@ -63,10 +64,10 @@ function processData(allText, container) {
 
 
 document.addEventListener("DOMContentLoaded", function(){
-    var fileInputs = document.querySelectorAll("[filename]");
+    var fileInputs = document.querySelectorAll("[table_name]");
     for(var i = 0; i < fileInputs.length; i++){
         var container = fileInputs[i];
-        var name = container.getAttribute("filename");
+        var name = container.getAttribute("table_name");
 
         getAndParseFile(name, container);
     }
