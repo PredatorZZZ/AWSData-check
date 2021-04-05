@@ -43,6 +43,7 @@ if __name__ == '__main__':
         aws_data = AWSData(args.aws_profile, args.aws_region)
         html_report = HTMLReport(args.output_file)
         for process_table in process_tables:
+            process_table = process_table.lower()
             tables_data[process_table] = {
                 'Glue': aws_data.get_aws_glue_data(process_table),
                 'S3': aws_data.get_aws_s3_data(process_table),
