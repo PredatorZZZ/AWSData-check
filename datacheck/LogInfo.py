@@ -15,6 +15,7 @@ class LogInfo:
     def info(self, func):
         def wrapper(*args, **kwargs):
             self.logger.info(f'Started executing {func.__name__}')
+            self.logger.info(f'{func.__name__} got args: {args[1:]}')
             value = func(*args, **kwargs)
             self.logger.info(f'Finished executing {func.__name__}')
             return value

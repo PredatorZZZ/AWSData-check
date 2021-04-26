@@ -1,4 +1,5 @@
 import os
+import time
 
 import boto3
 import botocore.exceptions as aws_err
@@ -7,6 +8,8 @@ from .LogInfo import LogInfo
 
 
 class AWSData:
+
+    ATHENA_TIMEOUT = 5 * 60
     S3_LINK_TEMPLATE = "https://console.aws.amazon.com/s3/" \
                        "home?region={REGION}&bucket={BUCKET}&prefix={PREFIX}"
 
@@ -90,7 +93,9 @@ class AWSData:
             ["ResultConfiguration"]["OutputLocation"]
         bucket = output_file_path.split("/")[2]
         key = "/".join(output_file_path.split("/")[3:])
-        while True:
+        timeout = time.time() + self.ATHENA_TIMEOUT
+
+        while time.time() < timeout:
             try:
                 s3_client.download_file(
                     bucket, key, download_file_name
@@ -99,3 +104,4 @@ class AWSData:
                 return output
             except aws_err.ClientError:
                 continue
+        return output

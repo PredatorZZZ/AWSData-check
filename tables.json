@@ -1,6 +1,5 @@
 {
   "tables": [
-    "stg_hsd.por_initiatives",
-    "stg_hsd.por_franchises"
+    "stg.core_quantum_events"
   ]
 }
