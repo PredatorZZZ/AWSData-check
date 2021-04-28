@@ -29,8 +29,13 @@ if __name__ == '__main__':
                         type=str)
     args = parser.parse_args()
 
-    with open(f'{args.path}', 'r') as json_file_config:
-        config_data = json.load(json_file_config)
+    try:
+        with open(f'{args.path}', 'r') as json_file_config:
+            config_data = json.load(json_file_config)
+    except FileNotFoundError as e:
+        logging.error(f'File not found {e}')
+        sys.exit(1)
+
     process_tables = config_data.get('tables')
 
     if len(process_tables) != len(set(process_tables)):

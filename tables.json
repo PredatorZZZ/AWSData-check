@@ -1,5 +1,6 @@
 {
   "tables": [
-    "stg.core_quantum_events"
+    "stg_hsd.por_franchises",
+    "stg_iden.identity_central_auth"
   ]
 }
